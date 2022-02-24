@@ -86,40 +86,40 @@ export async function useWebhook(req: NowRequest, res: NowResponse) {
 	}
 	
 	
-	try {
-		if (!isDev && !VERCEL_URL) {
-			throw new Error("VERCEL_URL is not set.");
-		}
+	// try {
+	// 	if (!isDev && !VERCEL_URL) {
+	// 		throw new Error("VERCEL_URL is not set.");
+	// 	}
 
-		const getWebhookInfo = await bot.telegram.getWebhookInfo();
+	// 	const getWebhookInfo = await bot.telegram.getWebhookInfo();
 
-		const botInfo = await bot.telegram.getMe();
-		bot.options.username = botInfo.username;
-		console.info("Server has initialized bot username using Webhook. ", botInfo.username);
+	// 	const botInfo = await bot.telegram.getMe();
+	// 	bot.options.username = botInfo.username;
+	// 	console.info("Server has initialized bot username using Webhook. ", botInfo.username);
 
-		if (getWebhookInfo.url !== VERCEL_URL + "/api") {
-			debug(`deleting webhook`);
-			await bot.telegram.deleteWebhook();
-			debug(`setting webhook to ${VERCEL_URL}/api`);
-			await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
-		}
+	// 	if (getWebhookInfo.url !== VERCEL_URL + "/api") {
+	// 		debug(`deleting webhook`);
+	// 		await bot.telegram.deleteWebhook();
+	// 		debug(`setting webhook to ${VERCEL_URL}/api`);
+	// 		await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
+	// 	}
 
-		// call bot commands and middlware
-		botUtils();
+	// 	// call bot commands and middlware
+	// 	botUtils();
 
-		// console.log("webhook already defined");
-		// console.log("request method: ", req.method);
-		// console.log("req.body", req.body);
+	// 	// console.log("webhook already defined");
+	// 	// console.log("request method: ", req.method);
+	// 	// console.log("req.body", req.body);
 
-		if (req.method === "POST") {
-			await bot.handleUpdate(req.body, res);
-		} else {
-			ok(res, "Listening to bot events...");
-		}
-	} catch (error) {
-		console.error(error);
-		return error.message;
-	}
+	// 	if (req.method === "POST") {
+	// 		await bot.handleUpdate(req.body, res);
+	// 	} else {
+	// 		ok(res, "Listening to bot events...");
+	// 	}
+	// } catch (error) {
+	// 	console.error(error);
+	// 	return error.message;
+	// }
 }
 
 export function toArgs(ctx: TelegrafContext) {
