@@ -3,14 +3,14 @@ import Telegraf, { Context as TelegrafContext, Extra } from "telegraf";
 import { ExtraReplyMessage } from "telegraf/typings/telegram-types";
 import { about, greeting, sendkey } from "..";
 import md5 from 'md5';
-//import { ok } from "./responses";
+import { ok } from "./responses";
 import axios from 'axios';
 
 const debug = require("debug")("lib:telegram");
 
 const isDev = process.env.DEV;
 
-//const VERCEL_URL = process.env.VERCEL_URL;
+const VERCEL_URL = process.env.VERCEL_URL;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const TCKEY = process.env.TCKEY;
 
@@ -86,40 +86,40 @@ export async function useWebhook(req: NowRequest, res: NowResponse) {
 	}
 	
 	
-	// try {
-	// 	if (!isDev && !VERCEL_URL) {
-	// 		throw new Error("VERCEL_URL is not set.");
-	// 	}
+	try {
+		if (!isDev && !VERCEL_URL) {
+			throw new Error("VERCEL_URL is not set.");
+		}
 
-	// 	const getWebhookInfo = await bot.telegram.getWebhookInfo();
+		const getWebhookInfo = await bot.telegram.getWebhookInfo();
 
-	// 	const botInfo = await bot.telegram.getMe();
-	// 	bot.options.username = botInfo.username;
-	// 	console.info("Server has initialized bot username using Webhook. ", botInfo.username);
+		const botInfo = await bot.telegram.getMe();
+		bot.options.username = botInfo.username;
+		console.info("Server has initialized bot username using Webhook. ", botInfo.username);
 
-	// 	if (getWebhookInfo.url !== VERCEL_URL + "/api") {
-	// 		debug(`deleting webhook`);
-	// 		await bot.telegram.deleteWebhook();
-	// 		debug(`setting webhook to ${VERCEL_URL}/api`);
-	// 		await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
-	// 	}
+		if (getWebhookInfo.url !== VERCEL_URL + "/api") {
+			debug(`deleting webhook`);
+			await bot.telegram.deleteWebhook();
+			debug(`setting webhook to ${VERCEL_URL}/api`);
+			await bot.telegram.setWebhook(`${VERCEL_URL}/api`);
+		}
 
-	// 	// call bot commands and middlware
-	// 	botUtils();
+		// call bot commands and middlware
+		//botUtils();
 
-	// 	// console.log("webhook already defined");
-	// 	// console.log("request method: ", req.method);
-	// 	// console.log("req.body", req.body);
+		// console.log("webhook already defined");
+		// console.log("request method: ", req.method);
+		// console.log("req.body", req.body);
 
-	// 	if (req.method === "POST") {
-	// 		await bot.handleUpdate(req.body, res);
-	// 	} else {
-	// 		ok(res, "Listening to bot events...");
-	// 	}
-	// } catch (error) {
-	// 	console.error(error);
-	// 	return error.message;
-	// }
+		if (req.method === "POST") {
+			await bot.handleUpdate(req.body, res);
+		} else {
+			ok(res, "Listening to bot events...");
+		}
+	} catch (error) {
+		console.error(error);
+		return error.message;
+	}
 }
 
 export function toArgs(ctx: TelegrafContext) {
@@ -130,7 +130,7 @@ export function toArgs(ctx: TelegrafContext) {
 	}
 	return !parts[3] ? [] : parts[3].split(/\s+/).filter(arg => arg.length);
 }
-
+  
 export const MARKDOWN = Extra.markdown(true) as ExtraReplyMessage;
 
 export const NO_PREVIEW = Extra.markdown(true).webPreview(false) as ExtraReplyMessage;
